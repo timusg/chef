@@ -53,16 +53,7 @@ class Chef
           Chef::Log.debug("HTTP server did not include a Content-Length header in response, cannot identify truncated downloads.")
           return [http_response, rest_request, return_value]
         end
-          if http_response.code == "403"
-            Chef::Log.debug("response.body.length = #{http_response.body.length}")
-            body = http_response.body.dup
-            body.encode!('ASCII-8BIT', :invalid => :replace, :undef => :replace, :replace => '?')
-            body.gsub!(/[^[:print:]]/, '?')
-            Chef::Log.debug("---- HTTP Body Data ----")
-            Chef::Log.debug(body)
-            Chef::Log.debug("---- End HTTP Body Data ----")
-          end
-        validate(response_content_length(http_response), http_response.body.bytesize)
+        validate(http_response, response_content_length(http_response), http_response.body.bytesize)
         return [http_response, rest_request, return_value]
       end
 
@@ -72,7 +63,7 @@ class Chef
         elsif @content_length_counter.nil?
           Chef::Log.debug("No content-length information collected for the streamed download, cannot identify streamed download.")
         else
-          validate(response_content_length(http_response), @content_length_counter.content_length)
+          validate(http_response, response_content_length(http_response), @content_length_counter.content_length)
         end
         return [http_response, rest_request, return_value]
       end
@@ -90,10 +81,19 @@ class Chef
         end
       end
 
-      def validate(content_length, response_length)
+      def validate(http_response, content_length, response_length)
         Chef::Log.debug "Content-Length header = #{content_length}"
         Chef::Log.debug "Response body length = #{response_length}"
         if response_length != content_length
+          Chef::Log.debug("About to raise ContentLengthMismatch")
+          Chef::Log.debug("response.body.length = #{http_response.body.length}")
+          Chef::Log.debug("response.body.bytesize = #{http_response.body.bytesize}")
+          body = http_response.body.dup
+          body.encode!('ASCII-8BIT', :invalid => :replace, :undef => :replace, :replace => '?')
+          body.gsub!(/[^[:print:]]/, '?')
+          Chef::Log.debug("---- HTTP Body Data ----")
+          Chef::Log.debug(body)
+          Chef::Log.debug("---- End HTTP Body Data ----")
           raise Chef::Exceptions::ContentLengthMismatch.new(response_length, content_length)
         end
         true
