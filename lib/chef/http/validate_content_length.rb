@@ -37,6 +37,7 @@ class Chef
 
         def handle_chunk(chunk)
           @content_length += chunk.bytesize
+          Chef::Log.debug("Adding #{chunk.bytesize} to the streamed content length, sum = #{@content_length}")
           chunk
         end
       end
