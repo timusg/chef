@@ -54,6 +54,7 @@ class Chef
           Chef::Log.debug("HTTP server did not include a Content-Length header in response, cannot identify truncated downloads.")
           return [http_response, rest_request, return_value]
         end
+        Chef::Log.debug("HTTP body bytesize = #{http_response.body.bytesize}")
         validate(http_response, response_content_length(http_response), http_response.body.bytesize)
         return [http_response, rest_request, return_value]
       end
@@ -64,6 +65,7 @@ class Chef
         elsif @content_length_counter.nil?
           Chef::Log.debug("No content-length information collected for the streamed download, cannot identify streamed download.")
         else
+          Chef::Log.debug("Content Length Counter = #{@content_length_counter.content_length}")
           validate(http_response, response_content_length(http_response), @content_length_counter.content_length)
         end
         return [http_response, rest_request, return_value]
