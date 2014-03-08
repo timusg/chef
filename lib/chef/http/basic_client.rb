@@ -71,8 +71,7 @@ class Chef
           Chef::Log.debug("---- End HTTP Status/Header Data ----")
           Chef::Log.debug("response.body.length = #{response.body.length}")
           body = response.body.dup
-          body.force_encoding('UTF-8')
-          body.encode!('UTF-8', :invalid => :replace, :undef => :replace, :replace => '?') unless body.valid_encoding?
+          body.encode!('ASCII-8BIT', :invalid => :replace, :undef => :replace, :replace => '?')
           body.gsub!(/[^[:print:]]/, '?')
           Chef::Log.debug("---- HTTP Body Data ----")
           Chef::Log.debug(body)
