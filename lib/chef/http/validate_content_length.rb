@@ -53,6 +53,15 @@ class Chef
           Chef::Log.debug("HTTP server did not include a Content-Length header in response, cannot identify truncated downloads.")
           return [http_response, rest_request, return_value]
         end
+          if http_response.code == "403"
+            Chef::Log.debug("response.body.length = #{http_response.body.length}")
+            body = http_response.body.dup
+            body.encode!('ASCII-8BIT', :invalid => :replace, :undef => :replace, :replace => '?')
+            body.gsub!(/[^[:print:]]/, '?')
+            Chef::Log.debug("---- HTTP Body Data ----")
+            Chef::Log.debug(body)
+            Chef::Log.debug("---- End HTTP Body Data ----")
+          end
         validate(response_content_length(http_response), http_response.body.bytesize)
         return [http_response, rest_request, return_value]
       end
