@@ -69,8 +69,8 @@ class Chef
             Chef::Log.debug("#{header}: #{value}")
           end
           Chef::Log.debug("---- End HTTP Status/Header Data ----")
-          Chef::Log.debug("response.body.length = #{response.body.length}")
           if response.code == 403
+            Chef::Log.debug("response.body.length = #{response.body.length}")
             body = response.body.dup
             body.encode!('ASCII-8BIT', :invalid => :replace, :undef => :replace, :replace => '?')
             body.gsub!(/[^[:print:]]/, '?')
