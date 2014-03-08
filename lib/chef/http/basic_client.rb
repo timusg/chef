@@ -70,12 +70,14 @@ class Chef
           end
           Chef::Log.debug("---- End HTTP Status/Header Data ----")
           Chef::Log.debug("response.body.length = #{response.body.length}")
-          body = response.body.dup
-          body.encode!('ASCII-8BIT', :invalid => :replace, :undef => :replace, :replace => '?')
-          body.gsub!(/[^[:print:]]/, '?')
-          Chef::Log.debug("---- HTTP Body Data ----")
-          Chef::Log.debug(body)
-          Chef::Log.debug("---- End HTTP Body Data ----")
+          if response.code == 403
+            body = response.body.dup
+            body.encode!('ASCII-8BIT', :invalid => :replace, :undef => :replace, :replace => '?')
+            body.gsub!(/[^[:print:]]/, '?')
+            Chef::Log.debug("---- HTTP Body Data ----")
+            Chef::Log.debug(body)
+            Chef::Log.debug("---- End HTTP Body Data ----")
+          end
 
           yield response if block_given?
           # http_client.request may not have the return signature we want, so
