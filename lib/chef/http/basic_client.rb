@@ -69,6 +69,12 @@ class Chef
             Chef::Log.debug("#{header}: #{value}")
           end
           Chef::Log.debug("---- End HTTP Status/Header Data ----")
+          Chef::Log.debug("response.body.length = #{response.body.length}")
+          body = response.body.dup
+          body.force_encoding('UTF-8').gsub!(/[^[:print:]]/, '?')
+          Chef::Log.debug("---- HTTP Body Data ----")
+          Chef::Log.debug(body)
+          Chef::Log.debug("---- End HTTP Body Data ----")
 
           yield response if block_given?
           # http_client.request may not have the return signature we want, so
