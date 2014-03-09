@@ -68,6 +68,7 @@ class Chef
           Chef::Log.debug("Content Length Counter = #{@content_length_counter.content_length}")
           validate(http_response, response_content_length(http_response), @content_length_counter.content_length)
         end
+        @content_length_counter = nil
         return [http_response, rest_request, return_value]
       end
 
