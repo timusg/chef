@@ -19,12 +19,9 @@ Gem::Specification.new do |s|
   s.add_dependency "mixlib-shellout", "~> 1.4"
   s.add_dependency "ohai", "~> 7.0"
 
-  s.add_dependency "rest-client", ">= 1.0.4", "< 1.7.0"
-  # rest-client has an unbounded dependency on mime-types.
-  # mime-types 2.0 removes support for ruby 1.8.7 (gemspec requires ruby
-  # 1.9.2+), so we have to add an additional pin. 1.16 is chosen just becuase
-  # it's the version I had when I tested.
-  s.add_dependency "mime-types", "~> 1.16"
+  # ohai includes mime-types for some reason but it pins to ~> 1.16 so we
+  # do not need this any more?
+  #s.add_dependency "mime-types", "~> 1.16"
 
   # The JSON gem reliably releases breaking changes as a patch release
   s.add_dependency "json", ">= 1.4.4", "<=  1.8.1"
